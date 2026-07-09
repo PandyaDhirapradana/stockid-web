@@ -1,0 +1,326 @@
+### ============================================
+### VARIABLES — ganti sesuai kebutuhan
+### ============================================
+
+@baseUrl = http://localhost:5000/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGY5MTg0MWRkYWY4MDU1NWE4MGE3MCIsImlhdCI6MTc3NjM1NzM0OSwiZXhwIjoxNzc2OTYyMTQ5fQ.3vqBn5h4ZWZSl-AgAz5kwoQ2kCnCpZgLejuw00g_bXM
+@memberId = 69df963f65e1defaa5ed4fe5
+@transactionId = 69e65e6e13743bd0057d265c
+
+
+### ============================================
+### 1. HEALTH CHECK
+### ============================================
+
+### 1.1 - Cek server jalan
+GET {{baseUrl}}/health
+
+
+### ============================================
+### 2. AUTH
+### ============================================
+
+### 2.1 - Login admin (jalankan ini PERTAMA)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "pandyatestacc@gmail.com",
+  "password": "NewPassword@123"
+}
+
+###
+
+### 2.2 - Get profil admin (butuh token)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+###
+
+### 2.3 - Forgot password
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "pandyatestacc@gmail.com"
+}
+
+###
+
+### 2.4 - Reset password (isi token dari email)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "9265ccf357dd56568fa67bbd646abb62cabf5bd2c485ddd69bb93b79d19f27ca",
+  "password": "NewPassword@123"
+}
+
+
+### ============================================
+### 3. MEMBER
+### ============================================
+
+### 3.1 - Get semua member
+GET {{baseUrl}}/members
+Authorization: Bearer {{token}}
+
+###
+
+### 3.2 - Get member dengan filter search
+GET {{baseUrl}}/members?search=budi&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### 3.3 - Get member filter by status aktif
+GET {{baseUrl}}/members?status=active
+Authorization: Bearer {{token}}
+
+###
+
+### 3.4 - Get member filter by kelas
+GET {{baseUrl}}/members?category=VIP
+Authorization: Bearer {{token}}
+
+###
+
+### 3.5 - Get statistik member (untuk dashboard)
+GET {{baseUrl}}/members/stats
+Authorization: Bearer {{token}}
+
+###
+
+### 3.6 - Buat member baru
+POST {{baseUrl}}/members
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Budi Santoso",
+  "phone": "081234567890",
+  "classCategory": "Basic",
+  "startDate": "2025-01-01",
+  "durationDays": 30,
+  "reason": "Pendaftaran manual"
+}
+
+###
+
+### 3.7 - Buat member kelas VIP
+POST {{baseUrl}}/members
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Siti Rahayu",
+  "phone": "082345678901",
+  "classCategory": "VIP",
+  "startDate": "2025-01-01",
+  "durationDays": 30,
+  "reason": "Member VIP baru"
+}
+
+###
+
+### 3.8 - Update member (ganti memberId dulu)
+PUT {{baseUrl}}/members/{{memberId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Budi Santoso Updated",
+  "phone": "081234567890",
+  "classCategory": "Intermediate"
+}
+
+###
+
+### 3.9 - Perpanjang durasi member
+PATCH {{baseUrl}}/members/{{memberId}}/extend
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "durationDays": 30,
+  "reason": "Perpanjangan manual oleh admin"
+}
+
+###
+
+### 3.10 - Hapus member
+DELETE {{baseUrl}}/members/{{memberId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 3.11 - Export Excel (akan download file)
+GET {{baseUrl}}/members/export
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### 4. PAYMENT (Guest — tanpa token)
+### ============================================
+
+### 4.1 - Buat transaksi Basic
+POST {{baseUrl}}/payment/create-transaction
+Content-Type: application/json
+
+{
+  "name": "Andi Wijaya",
+  "phone": "083456789012",
+  "classCategory": "Basic"
+}
+
+###
+
+### 4.2 - Buat transaksi VIP
+POST {{baseUrl}}/payment/create-transaction
+Content-Type: application/json
+
+{
+  "name": "Dewi Kusuma",
+  "phone": "084567890123",
+  "classCategory": "VIP"
+}
+
+###
+
+### 4.3 - Test validasi — kategori tidak valid (harus error)
+POST {{baseUrl}}/payment/create-transaction
+Content-Type: application/json
+
+{
+  "name": "Hacker",
+  "phone": "085678901234",
+  "classCategory": "Premium"
+}
+
+###
+
+### 4.4 - Test validasi — phone tidak valid (harus error)
+POST {{baseUrl}}/payment/create-transaction
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "phone": "12345",
+  "classCategory": "Basic"
+}
+
+
+### ============================================
+### 5. TRANSAKSI (Admin)
+### ============================================
+
+### 5.1 - Get semua transaksi
+GET {{baseUrl}}/transactions
+Authorization: Bearer {{token}}
+
+###
+
+### 5.2 - Get transaksi pending saja
+GET {{baseUrl}}/transactions?status=pending
+Authorization: Bearer {{token}}
+
+###
+
+### 5.3 - Get transaksi dengan search
+GET {{baseUrl}}/transactions?search=Andi
+Authorization: Bearer {{token}}
+
+###
+
+### 5.4 - Approve transaksi (ganti transactionId dulu)
+PATCH {{baseUrl}}/transactions/{{transactionId}}/approve
+Authorization: Bearer {{token}}
+
+###
+
+### 5.5 - Reject transaksi
+PATCH {{baseUrl}}/transactions/{{transactionId}}/reject
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Bukti pembayaran tidak valid"
+}
+
+
+### ============================================
+### 6. LEADERBOARD (Public — tanpa token)
+### ============================================
+
+### 6.1 - Get leaderboard default
+GET {{baseUrl}}/leaderboard
+
+###
+
+### 6.2 - Sort terlama aktif
+GET {{baseUrl}}/leaderboard?sort=longest
+
+###
+
+### 6.3 - Sort hampir expired
+GET {{baseUrl}}/leaderboard?sort=shortest
+
+###
+
+### 6.4 - Sort alphabetical
+GET {{baseUrl}}/leaderboard?sort=alphabetical
+
+###
+
+### 6.5 - Search by nama
+GET {{baseUrl}}/leaderboard?search=budi
+
+###
+
+### 6.6 - Dengan pagination
+GET {{baseUrl}}/leaderboard?page=1&limit=10
+
+
+### ============================================
+### 7. SECURITY TESTS (harus semua GAGAL/error)
+### ============================================
+
+### 7.1 - Akses member tanpa token (harus 401)
+GET {{baseUrl}}/members
+
+###
+
+### 7.2 - Login salah password (harus 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@stockclass.com",
+  "password": "passwordsalah"
+}
+
+###
+
+### 7.3 - Login dengan token palsu (harus 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer tokenpalsubanget123
+
+###
+
+### 7.4 - Buat member tanpa token (harus 401)
+POST {{baseUrl}}/members
+Content-Type: application/json
+
+{
+  "name": "Hacker",
+  "phone": "081111111111",
+  "classCategory": "VIP",
+  "startDate": "2025-01-01",
+  "durationDays": 365
+}
+
+### Simulate settlement (dev only)
+PATCH {{baseUrl}}/payment/simulate-settlement/SC-1780141024313-SXN1J
+
+### Cek isi site content dari database
+GET {{baseUrl}}/content/site
