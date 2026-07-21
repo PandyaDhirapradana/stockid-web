@@ -320,7 +320,7 @@ Content-Type: application/json
 }
 
 ### Simulate settlement (dev only)
-PATCH {{baseUrl}}/payment/simulate-settlement/SC-1780141024313-SXN1J
+PATCH {{baseUrl}}/payment/simulate-settlement/SC-1783848952737-1QOGK
 
 ### Cek isi site content dari database
 GET {{baseUrl}}/content/site

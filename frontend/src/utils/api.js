@@ -33,7 +33,8 @@ api.interceptors.request.use((config) => {
     (url.startsWith('/content/mentors') && method !== 'get') ||
     (url.startsWith('/modules') && method !== 'get') || 
     url.startsWith('/modules/all') ||
-    (url.startsWith('/content/site/slider') && method !== 'get');
+    (url.startsWith('/content/site/slider') && method !== 'get')||
+    url.startsWith('/payment/dev/');
 
   // Leaderboard: kirim token sesuai halaman yang sedang dibuka
   // Jika sedang di halaman admin, pakai admin token

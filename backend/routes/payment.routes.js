@@ -3,16 +3,15 @@ const router = express.Router();
 const { createTransaction, handleNotification } = require('../controllers/payment.controller');
 const { validatePayment } = require('../middleware/validate.middleware');
 const { protectUser } = require('../middleware/user.auth.middleware');
+const { protect } = require('../middleware/auth.middleware');
 
-// User harus login untuk buat transaksi
 router.post('/create-transaction', protectUser, validatePayment, createTransaction);
 router.post('/notification', handleNotification);
 
-module.exports = router;
-
-// DEVELOPMENT ONLY — hapus sebelum deploy production
-if (process.env.NODE_ENV === 'development') {
-  router.patch('/simulate-settlement/:orderId', async (req, res) => {
+// ENDPOINT SIMULASI SIDANG — hanya bisa diakses admin yang login
+// Hapus setelah sidang selesai
+router.patch('/dev/settle/:orderId', protect, async (req, res) => {
+  try {
     const Transaction = require('../models/Transaction.model');
     const tx = await Transaction.findOneAndUpdate(
       { orderId: req.params.orderId },
@@ -21,5 +20,9 @@ if (process.env.NODE_ENV === 'development') {
     );
     if (!tx) return res.status(404).json({ success: false, message: 'Not found' });
     res.json({ success: true, data: tx });
-  });
-}
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+module.exports = router;

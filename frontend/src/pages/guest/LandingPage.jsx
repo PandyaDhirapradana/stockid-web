@@ -346,23 +346,40 @@ const LandingPage = () => {
   }, [user]);
 
   useEffect(() => {
+    const fetchWithRetry = async (fn, retries = 3, delay = 2000) => {
+      for (let i = 0; i < retries; i++) {
+        try { return await fn(); }
+        catch (err) {
+          if (i < retries - 1) await new Promise(r => setTimeout(r, delay));
+          else throw err;
+        }
+      }
+    };
+
     const fetchAll = async () => {
       try {
         const [contentRes, reviewsRes, gainsRes, mentorsRes, statsRes] = await Promise.all([
-          api.get('/content/site'),
-          api.get('/content/reviews'),
-          api.get('/content/gain-photos'),
-          api.get('/content/mentors'),
-          api.get('/members/stats').catch(() => ({ data: { data: { total: 0, active: 0 } } })),
+          fetchWithRetry(() => api.get('/content/site')),
+          fetchWithRetry(() => api.get('/content/reviews')),
+          fetchWithRetry(() => api.get('/content/gain-photos')),
+          fetchWithRetry(() => api.get('/content/mentors')),
+          fetchWithRetry(() => api.get('/members/stats')).catch(() => ({ data: { data: { total: 0, active: 0 } } })),
         ]);
         setSiteContent(contentRes.data.data);
         setReviews(reviewsRes.data.data);
         setGainPhotos(gainsRes.data.data);
         setMentors(mentorsRes.data.data);
-        setMemberStats({ total: statsRes.data.data?.total || 0, active: statsRes.data.data?.active || 0 });
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
+        setMemberStats({
+          total: statsRes.data.data?.total || 0,
+          active: statsRes.data.data?.active || 0,
+        });
+      } catch (err) {
+        console.error('Fetch gagal setelah retry:', err);
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchAll();
   }, []);
 

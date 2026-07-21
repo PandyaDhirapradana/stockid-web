@@ -100,21 +100,16 @@ const TransactionsPage = () => {
     const isMidtransRejected = tx.midtransStatus === 'rejected';
 
     if (tx.status === 'approved') {
-      return (
-        <span className="badge-active text-xs">✅ Disetujui</span>
-      );
+      return <span className="badge-active text-xs">Disetujui</span>;
     }
 
     if (tx.status === 'rejected') {
-      return (
-        <span className="badge-expired text-xs">❌ Ditolak</span>
-      );
+      return <span className="badge-expired text-xs">Ditolak</span>;
     }
 
-    // Status pending — tampilkan info payment + tombol
     return (
       <div className="flex flex-col gap-1.5">
-        {/* Baris 1: Status Midtrans */}
+        {/* Status Midtrans */}
         <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border w-fit
           ${isSettled
             ? 'bg-green-900/30 border-green-800 text-green-400'
@@ -124,15 +119,34 @@ const TransactionsPage = () => {
           }`}>
           <span>{isSettled ? '💰' : isMidtransRejected ? '❌' : '⏳'}</span>
           <span>
-            {isSettled
-              ? 'Pembayaran Masuk'
-              : isMidtransRejected
-              ? 'Pembayaran Gagal'
-              : 'Menunggu Pembayaran'}
+            {isSettled ? 'Pembayaran Masuk'
+              : isMidtransRejected ? 'Pembayaran Gagal'
+              : 'Pending'}
           </span>
         </div>
 
-        {/* Baris 2: Tombol approve/reject jika sudah settled */}
+        {/* Tombol simulasi settlement — untuk demo/sidang */}
+        {isWaiting && (
+          <button
+            onClick={async () => {
+              try {
+                await api.patch(`/payment/dev/settle/${tx.orderId}`);
+                fetchTransactions();
+              } catch (err) {
+                Swal.fire({
+                  icon: 'error', title: 'Gagal simulasi',
+                  text: err.response?.data?.message || 'Terjadi kesalahan',
+                  background: '#1e1e1e', color: '#fff', confirmButtonColor: '#22c55e',
+                });
+              }
+            }}
+            className="text-xs px-2 py-1 bg-zinc-800 text-zinc-400 hover:text-white rounded-lg border border-zinc-600 hover:border-zinc-400 transition-colors w-fit"
+          >
+            Konfirmasi
+          </button>
+        )}
+
+        {/* Tombol approve/reject jika sudah settled */}
         {isSettled && (
           <div className="flex items-center gap-1">
             <button onClick={() => handleApprove(tx)}

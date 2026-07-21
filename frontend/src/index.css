@@ -144,3 +144,17 @@
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #16a34a;
 }
+
+/* Sembunyikan pita/banner TEST milik Midtrans Snap */
+#snap-container .test-ribbon,
+.snap-ribbon,
+iframe[src*="sandbox.midtrans.com"] + div,
+[class*="ribbon-test"],
+[class*="test-badge"] {
+  display: none !important;
+}
+
+/* Atau dengan menargetkan elemen ribbon di dalam iframe/container snap */
+iframe#snap-midtrans {
+  /* Jika dipanggil via iframe custom */
+}
