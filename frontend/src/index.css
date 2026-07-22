@@ -153,7 +153,11 @@
 .snap-ribbon,
 .test-badge,
 [class*="test-ribbon"],
-[class*="ribbon-test"] {
+[class*="ribbon-test"],
+iframe[src*="midtrans"] ~ div,
+iframe[id*="snap"] ~ div,
+div[class*="snap-ribbon"],
+#snap-midtrans + div {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;

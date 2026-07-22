@@ -462,14 +462,14 @@ const MembersPage = () => {
             {/* Export semua data */}
             <button onClick={() => handleExport(false)}
               className="w-full bg-surface-2 border border-zinc-600 hover:border-accent rounded-xl p-4 text-left transition-colors group">
-              <p className="text-white font-medium group-hover:text-accent">📋 Semua Data</p>
+              <p className="text-white font-medium group-hover:text-accent">Semua Data</p>
               <p className="text-zinc-500 text-xs mt-1">Export seluruh member tanpa filter</p>
             </button>
 
             {/* Export per bulan */}
             <div className="bg-surface-2 border border-zinc-600 rounded-xl p-4 space-y-3">
               <div>
-                <p className="text-white font-medium mb-3">📅 Filter per Bulan</p>
+                <p className="text-white font-medium mb-3">Filter per Bulan</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="label">Bulan</label>
@@ -499,7 +499,7 @@ const MembersPage = () => {
                 </div>
               </div>
               <button onClick={() => handleExport(true)} className="btn-primary w-full">
-                ⬇️ Export Bulan Ini
+                ⬇ Export Bulan Ini
               </button>
             </div>
 

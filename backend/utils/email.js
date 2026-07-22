@@ -2,32 +2,29 @@ const nodemailer = require('nodemailer');
 
 const createTransporter = () => {
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: false,
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT) || 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false,
     },
   });
 };
 
 const sendPasswordResetEmail = async (email, name, resetToken, customUrl = null) => {
   const transporter = createTransporter();
-  const resetUrl = customUrl || `${process.env.FRONTEND_URL}/admin/reset-password?token=${resetToken}`;
+  const resetUrl = customUrl || `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: email,
-    subject: 'Stock ID — Reset Password',
+    subject: 'Stock.ID — Reset Password',
     html: `
       <body style="background:#121212;color:#fff;font-family:sans-serif;padding:40px;">
         <div style="max-width:500px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:32px;border:1px solid #3f3f46;">
           <div style="text-align:center;margin-bottom:24px;">
-            <h2 style="color:#fff;font-size:24px;margin:0;">Stock<span style="color:#22c55e;"> ID</span></h2>
+            <h2 style="color:#22c55e;font-size:24px;margin:0;">Stock<span style="color:#fff;">.ID</span></h2>
           </div>
           <h3 style="color:#22c55e;">Reset Password</h3>
           <p>Halo <strong>${name}</strong>,</p>
@@ -36,7 +33,7 @@ const sendPasswordResetEmail = async (email, name, resetToken, customUrl = null)
             Reset Password
           </a>
           <p style="color:#71717a;font-size:12px;">Abaikan jika tidak meminta reset password.</p>
-          <p style="color:#71717a;font-size:12px;margin-top:16px;">© ${new Date().getFullYear()} Stock ID</p>
+          <p style="color:#71717a;font-size:12px;margin-top:16px;">© ${new Date().getFullYear()} Stock.ID VIP</p>
         </div>
       </body>
     `,
@@ -59,12 +56,12 @@ const sendPaymentReceiptEmail = async (email, name, orderId, classCategory, amou
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: email,
-    subject: `Stock ID — Bukti Transaksi #${orderId}`,
+    subject: `Stock.ID — Bukti Transaksi #${orderId}`,
     html: `
       <body style="background:#121212;color:#fff;font-family:sans-serif;padding:40px;">
         <div style="max-width:500px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:32px;border:1px solid #3f3f46;">
           <div style="text-align:center;margin-bottom:24px;">
-            <h2 style="color:#fff;font-size:24px;margin:0;">Stock<span style="color:#22c55e;"> ID</span></h2>
+            <h2 style="color:#22c55e;font-size:24px;margin:0;">Stock<span style="color:#fff;">.ID</span></h2>
             <p style="color:#71717a;font-size:13px;margin-top:4px;">Bukti Transaksi</p>
           </div>
           <p>Halo <strong>${name}</strong>,</p>
@@ -79,7 +76,7 @@ const sendPaymentReceiptEmail = async (email, name, orderId, classCategory, amou
             </table>
           </div>
           <p style="color:#71717a;font-size:13px;">Admin akan mengkonfirmasi pembayaran dalam 1x24 jam.</p>
-          <p style="color:#71717a;font-size:12px;margin-top:24px;">© ${new Date().getFullYear()} Stock ID. Semua hak dilindungi.</p>
+          <p style="color:#71717a;font-size:12px;margin-top:24px;">© ${new Date().getFullYear()} Stock.ID VIP. Semua hak dilindungi.</p>
         </div>
       </body>
     `,

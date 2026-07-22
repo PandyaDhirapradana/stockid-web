@@ -411,7 +411,7 @@ const LandingPage = () => {
         onSuccess: () => {
           playSuccessSound();
           Swal.fire({
-            icon: 'success', title: '🎉 Pembayaran Berhasil!',
+            icon: 'success', title: 'Pembayaran Berhasil!',
             html: `<p>Transaksi kamu sedang diproses.<br/>Cek email untuk bukti transaksi.<br/>Admin akan mengkonfirmasi dalam 1x24 jam.</p>`,
             background: '#1e1e1e', color: '#fff', confirmButtonColor: '#22c55e',
             confirmButtonText: 'Cek Status Pembayaran',
