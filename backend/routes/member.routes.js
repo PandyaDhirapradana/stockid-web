@@ -8,9 +8,10 @@ const {
 const { protect, requireRole } = require('../middleware/auth.middleware');
 const { validateMember } = require('../middleware/validate.middleware');
 
+router.get('/stats', getMemberStats);
+
 router.use(protect);
 
-router.get('/stats', getMemberStats);
 router.get('/export', exportMembers);
 router.get('/', getAllMembers);
 router.post('/', validateMember, createMember);

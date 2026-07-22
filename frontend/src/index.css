@@ -145,16 +145,16 @@
   background: #16a34a;
 }
 
-/* Sembunyikan pita/banner TEST milik Midtrans Snap */
+/* =========================================================
+   HACK: Sembunyikan Pita Kertas "TEST" Midtrans Snap Sandbox
+   ========================================================= */
 #snap-container .test-ribbon,
+#snap-container .ribbon,
 .snap-ribbon,
-iframe[src*="sandbox.midtrans.com"] + div,
-[class*="ribbon-test"],
-[class*="test-badge"] {
+.test-badge,
+[class*="test-ribbon"],
+[class*="ribbon-test"] {
   display: none !important;
-}
-
-/* Atau dengan menargetkan elemen ribbon di dalam iframe/container snap */
-iframe#snap-midtrans {
-  /* Jika dipanggil via iframe custom */
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
