@@ -1,23 +1,12 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT) || 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-};
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendPasswordResetEmail = async (email, name, resetToken, customUrl = null) => {
-  const transporter = createTransporter();
   const resetUrl = customUrl || `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from: 'Stock.ID <onboarding@resend.dev>',
     to: email,
     subject: 'Stock.ID — Reset Password',
     html: `
@@ -41,7 +30,6 @@ const sendPasswordResetEmail = async (email, name, resetToken, customUrl = null)
 };
 
 const sendPaymentReceiptEmail = async (email, name, orderId, classCategory, amount, status) => {
-  const transporter = createTransporter();
   const formattedAmount = new Intl.NumberFormat('id-ID', {
     style: 'currency', currency: 'IDR', minimumFractionDigits: 0,
   }).format(amount);
@@ -53,8 +41,8 @@ const sendPaymentReceiptEmail = async (email, name, orderId, classCategory, amou
     : status === 'approved' ? '#22c55e'
     : '#ef4444';
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from: 'Stock.ID <onboarding@resend.dev>',
     to: email,
     subject: `Stock.ID — Bukti Transaksi #${orderId}`,
     html: `
